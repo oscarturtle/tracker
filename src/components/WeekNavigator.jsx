@@ -17,16 +17,14 @@ export function WeekNavigator({ weekStartISO, onChangeWeekStartISO }) {
 
   return (
     <div className="week-nav">
-      <div className="week-nav-left">
-        <div className="week-range">
-          <span className="week-range-strong">
-            {formatShort(weekStart)}–{formatShort(weekEnd)}
-          </span>
-          <span className="week-range-muted"> (Mon–Sun)</span>
-        </div>
+      <div className="week-range">
+        <span className="week-range-strong">
+          {formatShort(weekStart)}–{formatShort(weekEnd)}
+        </span>
+        <span className="week-range-muted"> (Mon–Sun)</span>
       </div>
 
-      <div className="week-nav-right">
+      <div className="week-nav-actions">
         <button className="btn" type="button" onClick={() => go(-7)}>
           ← Prev
         </button>
@@ -36,22 +34,6 @@ export function WeekNavigator({ weekStartISO, onChangeWeekStartISO }) {
         <button className="btn" type="button" onClick={() => go(7)}>
           Next →
         </button>
-
-        <label className="date-picker">
-          <span className="sr-only">Jump to week</span>
-          <input
-            className="input input-date"
-            type="date"
-            value={weekStartISO}
-            onChange={(e) => {
-              const picked = e.target.value
-              if (!picked) return
-              const d = fromISODate(picked)
-              onChangeWeekStartISO(toISODate(startOfWeekMonday(d)))
-            }}
-            aria-label="Jump to a week"
-          />
-        </label>
       </div>
     </div>
   )

@@ -147,13 +147,18 @@ code {
 
 .grid-2 {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 18px;
 }
 
-@media (max-width: 920px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
+@media (max-width: 520px) {
+  .header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
   }
 }
 
@@ -172,6 +177,12 @@ code {
   padding: 14px 14px 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   gap: 12px;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .card-title {
@@ -273,6 +284,7 @@ code {
   justify-content: space-between;
   gap: 12px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .week-range {
@@ -289,7 +301,7 @@ code {
   color: var(--muted);
 }
 
-.week-nav-right {
+.week-nav-actions {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -297,8 +309,35 @@ code {
   justify-content: flex-end;
 }
 
-.input-date {
-  padding: 8px 10px;
+@media (max-width: 520px) {
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-actions {
+    justify-content: flex-start;
+  }
+
+  .week-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .week-range {
+    text-align: left;
+  }
+
+  .week-nav-actions {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .week-nav-actions .btn {
+    flex: 1 1 auto;
+    padding: 10px 12px;
+  }
 }
 
 .sr-only {
