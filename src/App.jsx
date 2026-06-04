@@ -23,16 +23,25 @@ function sum(values) {
   return values.reduce((acc, n) => acc + n, 0)
 }
 
+const DAY_KEYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
 function isAllZeroByDay(actuals) {
-  return (
-    (actuals.mon ?? 0) === 0 &&
-    (actuals.tue ?? 0) === 0 &&
-    (actuals.wed ?? 0) === 0 &&
-    (actuals.thu ?? 0) === 0 &&
-    (actuals.fri ?? 0) === 0 &&
-    (actuals.sat ?? 0) === 0 &&
-    (actuals.sun ?? 0) === 0
-  )
+  return DAY_KEYS.every((key) => (actuals[key] ?? 0) === 0)
+}
+
+// Only load drink counts for the week — never merge in targets or other fields.
+function getWeekActuals(loaded) {
+  if (!loaded || typeof loaded !== 'object') return {}
+
+  if (loaded.actuals && typeof loaded.actuals === 'object') {
+    return loaded.actuals
+  }
+
+  const legacy = {}
+  for (const key of DAY_KEYS) {
+    if (typeof loaded[key] === 'number') legacy[key] = loaded[key]
+  }
+  return legacy
 }
 
 function App() {
@@ -48,7 +57,7 @@ function App() {
   const [draftTargets, setDraftTargets] = useState(() => loadTargets())
 
   const emptyActuals = useMemo(
-    () => ({ mon: 0, tue: 0, wed: 0, thu: 0, fri: 0, sat: 0, sun: 0 }),
+    () => Object.fromEntries(DAY_KEYS.map((key) => [key, 0])),
     [],
   )
 
@@ -62,8 +71,7 @@ function App() {
       return
     }
 
-    // Migration-friendly: older saved weeks may include `targets`, but we now use global targets.
-    setActuals({ ...emptyActuals, ...(loaded.actuals ?? loaded ?? {}) })
+    setActuals({ ...emptyActuals, ...getWeekActuals(loaded) })
   }, [weekStartISO, emptyActuals])
 
   // Save week data whenever actuals change
@@ -130,7 +138,7 @@ function App() {
       {view === 'dashboard' ? (
         <>
           <Card
-            title="Calendar"
+            title="Week"
             actions={
               <WeekNavigator
                 weekStartISO={weekStartISO}

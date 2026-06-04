@@ -3,9 +3,9 @@ const DEFAULT_TARGETS = {
   mon: 0,
   tue: 0,
   wed: 0,
-  thu: 1,
-  fri: 2,
-  sat: 2,
+  thu: 0,
+  fri: 0,
+  sat: 0,
   sun: 0,
 }
 
