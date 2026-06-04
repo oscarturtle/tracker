@@ -522,6 +522,25 @@ code {
   white-space: nowrap;
 }
 
+.chart-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.chart-nav-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .x-axis {
   display: flex;
   justify-content: space-between;

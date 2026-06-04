@@ -174,7 +174,7 @@ function App() {
           </div>
 
           <Card title="Last 4 weeks">
-            <Last3MonthsChart />
+            <Last3MonthsChart liveWeekISO={weekStartISO} liveActuals={actuals} />
           </Card>
         </>
       ) : (

@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { loadAll } from '../utils/storage.js'
-import { addWeeks, formatShort, fromISODate, startOfWeekMonday, toISODate } from '../utils/dates.js'
+import { addWeeks, formatShort, startOfWeekMonday, toISODate } from '../utils/dates.js'
 
 function sumActuals(actuals) {
   return (
@@ -13,15 +14,13 @@ function sumActuals(actuals) {
   )
 }
 
-function buildSeries() {
+function buildSeries(endWeek) {
   const all = loadAll()
   const weeks = all.weeks ?? {}
-
-  const end = startOfWeekMonday(new Date())
-  const startWeek = addWeeks(end, -3)
+  const startWeek = addWeeks(endWeek, -3)
 
   const points = []
-  for (let d = startWeek; d <= end; d = addWeeks(d, 1)) {
+  for (let d = startWeek; d <= endWeek; d = addWeeks(d, 1)) {
     const weekStartISO = toISODate(d)
     const week = weeks[weekStartISO]
     const actuals = week?.actuals ?? null
@@ -50,8 +49,23 @@ function pathFromPoints(points, w, h, pad) {
     .join(' ')
 }
 
-export function Last3MonthsChart() {
-  const points = buildSeries()
+export function Last3MonthsChart({ liveWeekISO, liveActuals }) {
+  const thisWeek = startOfWeekMonday(new Date())
+  const [endWeek, setEndWeek] = useState(thisWeek)
+
+  const isCurrentWeek = toISODate(endWeek) === toISODate(thisWeek)
+
+  function shiftWeeks(delta) {
+    setEndWeek((prev) => addWeeks(prev, delta))
+  }
+
+  // Read from localStorage for all weeks, then override the currently-viewed
+  // week with live state so the chart updates instantly as drinks are entered.
+  const points = buildSeries(endWeek).map((p) =>
+    p.weekStartISO === liveWeekISO
+      ? { ...p, value: sumActuals(liveActuals) }
+      : p
+  )
   const max = Math.max(1, ...points.map((p) => p.value))
 
   const W = 640
@@ -64,16 +78,20 @@ export function Last3MonthsChart() {
 
   return (
     <div className="chart">
-      <div className="chart-legend">
-        <span className="legend-item">
-          <span className="dot dot-actual" /> Total drinks per week
-        </span>
-        <span className="muted">
-          {start?.label}–{latest?.label}
-        </span>
+      <div className="chart-nav">
+        <div className="chart-legend">
+          <span className="legend-item">
+            <span className="dot dot-actual" /> Total drinks per week
+          </span>
+          <span className="muted">{start?.label}–{latest?.label}</span>
+        </div>
+        <div className="chart-nav-btns">
+          <button className="btn" type="button" onClick={() => shiftWeeks(-1)}>← Prev</button>
+          <button className="btn" type="button" onClick={() => shiftWeeks(1)} disabled={isCurrentWeek}>Next →</button>
+        </div>
       </div>
 
-      <div className="line-wrap" role="img" aria-label="Total drinks per week for last 3 months">
+      <div className="line-wrap" role="img" aria-label="Total drinks per week">
         <div className="line-svg-wrap">
           <svg className="line" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
             <path className="line-grid" d={`M ${PAD} ${PAD} L ${PAD} ${H - PAD} L ${W - PAD} ${H - PAD}`} />
@@ -107,17 +125,6 @@ export function Last3MonthsChart() {
           ))}
         </div>
       </div>
-
-      <div className="line-meta">
-        <div className="muted">Max: {max}</div>
-        <div className="muted">
-          This week ({latest?.weekStartISO}): <span className="strong">{latest?.value ?? 0}</span>
-        </div>
-      </div>
-
-      <p className="hint">
-        Weeks with no entries are shown as 0. (We store actuals per week, so this chart is fast and simple.)
-      </p>
     </div>
   )
 }
