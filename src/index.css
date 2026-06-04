@@ -508,6 +508,37 @@ code {
   stroke-width: 1;
 }
 
+.line-svg-wrap {
+  position: relative;
+}
+
+.line-value {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent-2);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.x-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 0 2px;
+}
+
+.x-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .line-meta {
   display: flex;
   justify-content: space-between;

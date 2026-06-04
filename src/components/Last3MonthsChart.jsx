@@ -76,15 +76,38 @@ export function Last3MonthsChart() {
       </div>
 
       <div className="line-wrap" role="img" aria-label="Total drinks per week for last 3 months">
-        <svg className="line" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
-          <path className="line-grid" d={`M ${PAD} ${PAD} L ${PAD} ${H - PAD} L ${W - PAD} ${H - PAD}`} />
-          <path className="line-path" d={d} />
+        <div className="line-svg-wrap">
+          <svg className="line" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+            <path className="line-grid" d={`M ${PAD} ${PAD} L ${PAD} ${H - PAD} L ${W - PAD} ${H - PAD}`} />
+            <path className="line-path" d={d} />
+            {points.map((p, i) => {
+              const x = PAD + ((W - PAD * 2) * i) / Math.max(1, points.length - 1)
+              const y = PAD + (H - PAD * 2) - ((H - PAD * 2) * p.value) / max
+              return <circle key={p.weekStartISO} className="line-dot" cx={x} cy={y} r="3.2" />
+            })}
+          </svg>
+
           {points.map((p, i) => {
-            const x = PAD + ((W - PAD * 2) * i) / Math.max(1, points.length - 1)
-            const y = PAD + (H - PAD * 2) - ((H - PAD * 2) * p.value) / max
-            return <circle key={p.weekStartISO} className="line-dot" cx={x} cy={y} r="3.2" />
+            if (p.value === 0) return null
+            const xPct = (PAD + ((W - PAD * 2) * i) / Math.max(1, points.length - 1)) / W * 100
+            const yPct = (PAD + (H - PAD * 2) - ((H - PAD * 2) * p.value) / max) / H * 100
+            return (
+              <span
+                key={p.weekStartISO}
+                className="line-value"
+                style={{ left: `${xPct}%`, top: `calc(${yPct}% - 20px)` }}
+              >
+                {p.value}
+              </span>
+            )
           })}
-        </svg>
+        </div>
+
+        <div className="x-axis">
+          {points.map((p) => (
+            <span key={p.weekStartISO} className="x-label">{p.label}</span>
+          ))}
+        </div>
       </div>
 
       <div className="line-meta">
