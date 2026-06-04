@@ -173,7 +173,7 @@ function App() {
             </Card>
           </div>
 
-          <Card title="Last 3 months">
+          <Card title="Last 4 weeks">
             <Last3MonthsChart />
           </Card>
         </>

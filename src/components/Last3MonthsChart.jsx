@@ -18,9 +18,7 @@ function buildSeries() {
   const weeks = all.weeks ?? {}
 
   const end = startOfWeekMonday(new Date())
-  const start = new Date(end)
-  start.setMonth(start.getMonth() - 3)
-  const startWeek = startOfWeekMonday(start)
+  const startWeek = addWeeks(end, -3)
 
   const points = []
   for (let d = startWeek; d <= end; d = addWeeks(d, 1)) {
